@@ -6,9 +6,8 @@ import { PostFeatured } from "@/components/PostFeatured";
 export default function Home() {
   return (
     <div>
-      <PostFeatured />
-
-      <Suspense fallback={<SpinLoader />}>
+      <Suspense fallback={<SpinLoader className="min-h mb-16 " />}>
+        <PostFeatured />
         <PostsList />
       </Suspense>
     </div>

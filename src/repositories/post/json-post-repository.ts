@@ -1,45 +1,55 @@
 import { PostModel } from "@/models/posts/post-model";
-import {PostRepository} from "@/repositories/post/post-repository";
-import {resolve} from "path";
-import  { readFile } from 'fs/promises'
+import { PostRepository } from "@/repositories/post/post-repository";
+import { resolve } from "path";
+import { readFile } from "fs/promises";
 
 const ROOT_DIR: string = process.cwd();
-const JSON_POST_FILE_PATH = resolve(ROOT_DIR, 'src', 'db', 'seed', 'posts.json');
+const JSON_POST_FILE_PATH = resolve(
+  ROOT_DIR,
+  "src",
+  "db",
+  "seed",
+  "posts.json"
+);
+const SIMULATE_DELAY_MS = 5000;
 
 export class JsonPostRepository implements PostRepository {
-    
-    async findById(id: string): Promise<PostModel> {
-        const posts = await this.findAllPublished();
-        const post = posts.find(post => post.id === id);
+  private async simulateDelay() {
+    if (SIMULATE_DELAY_MS <= 0) return;
 
-        if (!post) throw new Error("No post found with id " + id);
+    await new Promise((resolve) => setTimeout(resolve, SIMULATE_DELAY_MS));
+  }
 
-        return post;
+  async findById(id: string): Promise<PostModel> {
+    const posts = await this.findAllPublished();
+    const post = posts.find((post) => post.id === id);
 
-    }
+    if (!post) throw new Error("No post found with id " + id);
 
-    private async readFromDisk():  Promise<PostModel[]>{
-        const jsonContent = await readFile(JSON_POST_FILE_PATH, 'utf8');
-        const parsedJson = JSON.parse(jsonContent);
-        const { posts } = parsedJson;
-        return posts;
-    }
+    return post;
+  }
 
-    async findAllPublished(): Promise<PostModel[]> {
-        const posts = await this.readFromDisk();
-        return posts.filter(post => post.published === true);
-    }
+  private async readFromDisk(): Promise<PostModel[]> {
+    const jsonContent = await readFile(JSON_POST_FILE_PATH, "utf8");
+    const parsedJson = JSON.parse(jsonContent);
+    const { posts } = parsedJson;
+    return posts;
+  }
 
-    async findBySlug(slug: string): Promise<PostModel> {
-       const posts = await this.findAllPublished();
-        const post = posts.find(post => post.slug === slug);
+  async findAllPublished(): Promise<PostModel[]> {
+    await this.simulateDelay();
+    const posts = await this.readFromDisk();
+    return posts.filter((post) => post.published === true);
+  }
 
-        if (!post) throw new Error("No post found for the slug: " + slug);
+  async findBySlug(slug: string): Promise<PostModel> {
+    const posts = await this.findAllPublished();
+    const post = posts.find((post) => post.slug === slug);
 
-        return post;
-    }
+    if (!post) throw new Error("No post found for the slug: " + slug);
 
-
+    return post;
+  }
 }
 
 export const postRepository: PostRepository = new JsonPostRepository();
