@@ -9,7 +9,7 @@ const JSON_POST_FILE_PATH = resolve(ROOT_DIR, 'src', 'db', 'seed', 'posts.json')
 export class JsonPostRepository implements PostRepository {
 
     async findById(id: string): Promise<PostModel> {
-        const posts = await this.findAll();
+        const posts = await this.findAllPublished();
         const post = posts.find(post => post.id === id);
 
         if (!post) throw new Error("No post found with id " + id);
@@ -17,6 +17,7 @@ export class JsonPostRepository implements PostRepository {
         return post;
 
     }
+
     private async readFromDisk():  Promise<PostModel[]>{
         const jsonContent = await readFile(JSON_POST_FILE_PATH, 'utf8');
         const parsedJson = JSON.parse(jsonContent);
@@ -24,9 +25,9 @@ export class JsonPostRepository implements PostRepository {
         return posts;
     }
 
-    async findAll(): Promise<PostModel[]> {
+    async findAllPublished(): Promise<PostModel[]> {
         const posts = await this.readFromDisk();
-        return posts;
+        return posts.filter(post => post.published === true);
     }
 
 }
