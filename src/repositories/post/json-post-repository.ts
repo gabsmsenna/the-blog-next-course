@@ -7,7 +7,7 @@ const ROOT_DIR: string = process.cwd();
 const JSON_POST_FILE_PATH = resolve(ROOT_DIR, 'src', 'db', 'seed', 'posts.json');
 
 export class JsonPostRepository implements PostRepository {
-
+    
     async findById(id: string): Promise<PostModel> {
         const posts = await this.findAllPublished();
         const post = posts.find(post => post.id === id);
@@ -29,6 +29,16 @@ export class JsonPostRepository implements PostRepository {
         const posts = await this.readFromDisk();
         return posts.filter(post => post.published === true);
     }
+
+    async findBySlug(slug: string): Promise<PostModel> {
+       const posts = await this.findAllPublished();
+        const post = posts.find(post => post.slug === slug);
+
+        if (!post) throw new Error("No post found for the slug: " + slug);
+
+        return post;
+    }
+
 
 }
 
