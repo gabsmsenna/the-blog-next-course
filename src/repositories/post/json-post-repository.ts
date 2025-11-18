@@ -50,6 +50,10 @@ export class JsonPostRepository implements PostRepository {
 
     return post;
   }
+
+  async findAll(): Promise<PostModel[]> {
+    return await this.readFromDisk();
+  }
 }
 
 export const postRepository: PostRepository = new JsonPostRepository();
