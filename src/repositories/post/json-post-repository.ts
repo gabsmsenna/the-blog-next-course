@@ -14,6 +14,7 @@ const JSON_POST_FILE_PATH = resolve(
 const SIMULATE_DELAY_MS = 0;
 
 export class JsonPostRepository implements PostRepository {
+
   private async simulateDelay() {
     if (SIMULATE_DELAY_MS <= 0) return;
 
@@ -54,6 +55,13 @@ export class JsonPostRepository implements PostRepository {
   async findAll(): Promise<PostModel[]> {
     return await this.readFromDisk();
   }
-}
 
-export const postRepository: PostRepository = new JsonPostRepository();
+  async findBySlugPublished(slug: string): Promise<PostModel> {
+    const posts = await this.findAllPublished();
+    const post = posts.find(post => post.slug === slug);
+
+    if (!post) throw new Error('Post não encontrado para slug');
+
+    return post;
+  }
+}

@@ -1,7 +1,6 @@
-import { postRepository } from "@/repositories/post/json-post-repository";
+import { postRepository } from "@/repositories/post";
 import { unstable_cache } from "next/cache";
 import { notFound } from "next/navigation";
-import { cache } from "react";
 
 export const findAllPublicPostsCached = unstable_cache(
   async () => await postRepository.findAllPublished(),
@@ -18,6 +17,7 @@ export const findPublicPostBySlugCached = (slug: string) =>
         .findBySlugPublished(slug)
         .catch(() => undefined);
       if (!post) notFound();
+
       return post;
     },
     ["posts"],
