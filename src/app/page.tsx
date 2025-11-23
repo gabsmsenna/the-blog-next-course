@@ -3,6 +3,8 @@ import { Suspense } from "react";
 import { PostsList } from "@/components/PostsList";
 import { PostFeatured } from "@/components/PostFeatured";
 
+export const dynamic = "force-static";
+
 export default function Home() {
   return (
     <div>
