@@ -20,7 +20,7 @@ export const findPublicPostBySlugCached = (slug: string) =>
 
       return post;
     },
-    ["posts"],
+    [`post-${slug}`],
     {
       tags: [`post-${slug}`],
     }
