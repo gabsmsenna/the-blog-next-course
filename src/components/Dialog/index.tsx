@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { Button } from "../Button";
 
 type DialogProps = {
   isVisible?: boolean;
@@ -28,19 +29,18 @@ export function Dialog({ isVisible = false, title, content, onConfirm, onCancel,
         </h3>
         <div id="dialog-description">{content}</div>
         <div className="flex items-center justify-around">
-          <button
-            className="bg-slate-300 hover:bg-slate-400 transition text-slate-950 flex items-center justify-center py-2 px-4 rounded-lg cursor-pointer disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed"
+          <Button variant="ghost"
             autoFocus
             onClick={onCancel}
             disabled={disabled}
           >
             Cancelar
-          </button>
-          <button className="bg-blue-500 hover:bg-blue-600 transition text-slate-50 flex items-center justify-center py-2 px-4 rounded-lg cursor-pointer disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed"
+          </Button>
+          <Button variant="default"
             onClick={onConfirm}
             disabled={disabled}>
             Ok
-          </button>
+          </Button>
         </div>
       </div>
     </div>
