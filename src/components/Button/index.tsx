@@ -4,7 +4,7 @@ type ButtonVariants = "default" | "ghost" | "danger";
 type ButtonSizes = "sm" | "md" | "lg";
 
 type ButtonProps = {
-  variant: ButtonVariants;
+  variant?: ButtonVariants;
   size?: ButtonSizes;
 } & React.ComponentProps<"button">;
 
@@ -30,9 +30,9 @@ export function Button({
     " " +
     buttonSizes[size] +
     " " +
-    "flex items-center justify-center cursor-pointer transition disabled:cursor-not-allowed disabled:opacity-50 font-medium disabled:bg-slate-300 disabled:text-slate-600";
+    `flex items-center justify-center cursor-pointer transition disabled:cursor-not-allowed disabled:opacity-50 font-medium disabled:bg-slate-300 disabled:text-slate-600 ${props.className}`;
 
   console.log(buttonClasses);
 
-  return <button className={buttonClasses} {...props} />;
+  return <button {...props} className={buttonClasses}/>;
 }
