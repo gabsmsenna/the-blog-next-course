@@ -31,8 +31,5 @@ export function Button({
     buttonSizes[size] +
     " " +
     `flex items-center justify-center cursor-pointer transition disabled:cursor-not-allowed disabled:opacity-50 font-medium disabled:bg-slate-300 disabled:text-slate-600 ${props.className}`;
-
-  console.log(buttonClasses);
-
   return <button {...props} className={buttonClasses}/>;
 }
