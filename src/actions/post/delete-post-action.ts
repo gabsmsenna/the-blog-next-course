@@ -1,13 +1,10 @@
 "use server";
 
 import { postRepository } from "@/repositories/post";
-import { asyncDelay } from "@/utils/async-delay";
-import { logColor } from "@/utils/log-color";
+
 import { updateTag } from "next/cache";
 
 export async function deletePostAction(id: string) {
-  await asyncDelay(2000);
-  logColor("" + id);
 
   if (!id || typeof id !== "string") {
     return {

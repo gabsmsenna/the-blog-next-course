@@ -6,8 +6,6 @@ import ErrorMessage from "../ErrorMessage";
 export async function PostFeatured() {
   const posts = await findAllPublicPostsCached();
 
-  console.log('POSTS: ', posts);
-
   if (posts.length <= 0) return <ErrorMessage contentTitle="Ops!" content="Ainda não foi criado nenhum post." />
 
   const post = posts[0];
