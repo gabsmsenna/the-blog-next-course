@@ -1,13 +1,37 @@
-export const dynamic = 'force-dynamic';
+import { ManagePostForm } from "@/components/admin/ManagePostForm";
+import { makePublicPostFromDb } from "@/dto/post/dto";
+import { adminFindPostById } from "@/lib/post/queries/admin";
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
+
+export const dynamic = "force-dynamic";
 
 type AdminPostIdPageProps = {
-    params: Promise<{
-        id: string;
-    }>;
-}
+  params: Promise<{
+    id: string;
+  }>;
+};
 
-export default async function AdminPostIdPage({params,}: AdminPostIdPageProps) {
+export const metadata: Metadata = {
+  title: "Editar post",
+};
+
+export default async function AdminPostIdPage({
+  params,
+}: AdminPostIdPageProps) {
   const { id } = await params;
-  
-    return <div className="py-16 text-6xl">Admin Post Id: {id} page</div>;
+  const post = await adminFindPostById(id).catch();
+
+  if (!post) notFound();
+
+  const publicPost = makePublicPostFromDb(post);
+
+  return (
+    <>
+      <div className="flex flex-col gap-6">
+        <h1 className="text-xl font-extrabold">Editar post</h1>
+        <ManagePostForm publicPost={publicPost}/>
+      </div>
+    </>
+  );
 }
