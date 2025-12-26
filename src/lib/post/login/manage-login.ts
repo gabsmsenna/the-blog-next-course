@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import { cookies } from "next/headers";
 import { SignJWT, jwtVerify } from 'jose'
 import { string } from "zod";
+import { redirect } from 'next/navigation';
 
 const jwtSecreyKey = process.env.JWT_SECRET_KEY;
 const jwtEncodedKey = new TextEncoder().encode(jwtSecreyKey);
@@ -46,6 +47,32 @@ export async function deleteLoginSession() {
     cookieStore.delete(loginCookieName);
 }
 
+export async function getLoginSession() {
+    const cookieStore = await cookies();
+    const jwt = cookieStore.get(loginCookieName)?.value;
+
+    if (!jwt) return false;
+
+    return verifyJwt(jwt);
+}
+
+export async function verifyLoginSession() {
+    const  jwtPayload = await getLoginSession();
+
+    if (!jwtPayload) return false;
+
+    return jwtPayload?.username === process.env.LOGIN_USER;
+
+}
+
+export async function requireLoginSessionOrRedirect() {
+    const isAuthenticated = await getLoginSession();
+
+    if (!isAuthenticated) {
+        redirect('/admin/login');
+    }
+}
+
 export async function signJwt(jwtPayload: MyJwtPayload) {
     return new SignJWT(jwtPayload)
     .setProtectedHeader({ 
@@ -54,6 +81,18 @@ export async function signJwt(jwtPayload: MyJwtPayload) {
     .setIssuedAt()
     .setExpirationTime(loginExpirationString)
     .sign(jwtEncodedKey);
+}
+
+export async function verifyJwt(jwt: string | undefined = '') {
+    try {
+        const {payload} = await jwtVerify(jwt, jwtEncodedKey, {
+        algorithms: ['HS256'],
+    });
+    return payload;
+    } catch (error) {
+        console.log('Invalid token');
+        return false;
+    }
 }
 
 (async () => {
